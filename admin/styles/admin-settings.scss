@@ -1,0 +1,35 @@
+.wpsp-admin-settings {
+	.content-section {
+		display: none;
+
+		&.active {
+			display: block;
+		}
+	}
+
+	.input-group {
+		margin-bottom: 10px;
+	}
+
+	.find-replace-group .items {
+		display: flex;
+		align-items: center;
+		margin-bottom: 10px;
+	}
+
+	.repeater-remove-btn {
+		margin-left: 5px;
+	}
+
+	.repeater-add-btn {
+
+	}
+
+	.connection-clear {
+		&.hidden {
+			display: none;
+		}
+	}
+
+}
+

@@ -1,0 +1,52 @@
+.wpsp-admin-settings .content-section {
+  display: none;
+}
+.wpsp-admin-settings .content-section.active {
+  display: block;
+}
+.wpsp-admin-settings .input-group {
+  margin-bottom: 10px;
+}
+.wpsp-admin-settings .find-replace-group .items {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.wpsp-admin-settings .repeater-remove-btn {
+  margin-left: 5px;
+}
+.wpsp-admin-settings .connection-clear.hidden {
+  display: none;
+}
+
+.wpsp-post-sync-form .wpsp-form {
+  display: flex;
+  flex-direction: column;
+}
+.wpsp-post-sync-form .wpsp-form.hidden {
+  display: none;
+}
+.wpsp-post-sync-form .input-group {
+  margin-bottom: 10px;
+}
+.wpsp-post-sync-form p {
+  margin: 0 0 3px;
+}
+.wpsp-post-sync-form .button-group {
+  display: flex;
+}
+.wpsp-post-sync-form .button-group button {
+  margin: 5px;
+}
+.wpsp-post-sync-form .button-group button.hidden {
+  display: none;
+}
+.wpsp-post-sync-form .wpsp-notice.wpsp-notice-error {
+  color: orangered;
+}
+.wpsp-post-sync-form .wpsp-notice.wpsp-notice-success {
+  color: green;
+}
+.wpsp-post-sync-form .wpsp-notice.hidden {
+  display: none;
+}

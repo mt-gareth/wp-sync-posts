@@ -1,0 +1,45 @@
+.wpsp-post-sync-form {
+	.wpsp-form {
+		display: flex;
+		flex-direction: column;
+
+		&.hidden {
+			display: none;
+		}
+	}
+
+	.input-group {
+		margin-bottom: 10px;
+	}
+
+	p {
+		margin: 0 0 3px;
+	}
+
+	.button-group {
+		display: flex;
+
+		button {
+			margin: 5px;
+
+			&.hidden {
+				display: none;
+			}
+		}
+	}
+
+	.wpsp-notice {
+		&.wpsp-notice-error {
+			color: orangered;
+		}
+
+		&.wpsp-notice-success {
+			color: green;
+		}
+
+		&.hidden {
+			display: none;
+		}
+
+	}
+}
