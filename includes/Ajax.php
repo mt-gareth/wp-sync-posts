@@ -5,23 +5,40 @@ namespace WPSP;
 class Ajax
 {
 	/**
+	 * @var string
+	 */
+	private string $prefix = 'wp_ajax_wpsp_';
+
+	/**
+	 * @var array
+	 */
+	private array $actions = [
+		'update_setting',
+		'reset_key',
+		'add_update_connection',
+		'delete_connection',
+		'check_remote_url',
+		'start_sync'
+	];
+
+	public function get_prefix()
+	{
+		return $this->prefix;
+	}
+
+	public function get_actions()
+	{
+		return $this->actions;
+	}
+	/**
 	 * Register Ajax Endpoints for the admin area.
 	 *
 	 * @since    1.0.0
 	 */
 	public function admin_ajax()
 	{
-		$prefix = 'wp_ajax_wpsp_';
-		$actions = [
-			'update_setting',
-			'reset_key',
-			'add_update_connection',
-			'delete_connection',
-			'check_remote_url',
-			'start_sync'
-		];
-		foreach ( $actions as $action ) {
-			add_action( $prefix . $action, [ $this, 'ajax_' . $action ] );
+		foreach ( $this->actions as $action ) {
+			add_action( $this->prefix . $action, [ $this, 'ajax_' . $action ] );
 		}
 	}
 
@@ -138,7 +155,7 @@ class Ajax
 
 		$remote_site = new RemoteSiteInterface( $url, $key );
 		$validate = $remote_site->validate();
-		if ( !$validate['success'] ) wp_send_json_error( 'The url and key did not validate' . print_r($validate['data'], true) );
+		if ( !$validate[ 'success' ] ) wp_send_json_error( 'The url and key did not validate' . print_r( $validate[ 'data' ], true ) );
 
 		wp_send_json_success( $url );
 	}
@@ -163,11 +180,11 @@ class Ajax
 		$direction = esc_textarea( $request_data[ 'direction' ] );
 		if ( $direction === 'push' ) {
 			$send_status = $remote_site->send_push_request( $local_post->get_post_data(), $connection->find_replace, $remote_post_selection, $manual_post_id );
-			if ( !$send_status[ 'success' ] ) wp_send_json_error( 'There was an error while sending request ' . print_r($send_status['data'], true));
+			if ( !$send_status[ 'success' ] ) wp_send_json_error( 'There was an error while sending request ' . print_r( $send_status[ 'data' ], true ) );
 		} else {
 			$remote_post_data = $remote_site->send_pull_request( $remote_post_selection, $local_post->get_slug(), $manual_post_id );
-			if ( !$remote_post_data[ 'success' ] ) wp_send_json_error( 'There was an error while sending request ' . print_r($remote_post_data['data'], true) );
-			$local_post->set_post_data( $remote_post_data['data'], $this->reverse_find_replace( $connection->find_replace ) );
+			if ( !$remote_post_data[ 'success' ] ) wp_send_json_error( 'There was an error while sending request ' . print_r( $remote_post_data[ 'data' ], true ) );
+			$local_post->set_post_data( $remote_post_data[ 'data' ], $this->reverse_find_replace( $connection->find_replace ) );
 		}
 		wp_send_json_success();
 	}
@@ -186,7 +203,7 @@ class Ajax
 		return substr( preg_replace( "/[^a-zA-Z0-9]/", "", base64_encode( openssl_random_pseudo_bytes( $length + 1, $strong ) ) ), 0, $length );
 	}
 
-	public function get_connection( $connection_id )
+	private function get_connection( $connection_id )
 	{
 		$connections = get_option( 'wpsp_connections' ) ? json_decode( get_option( 'wpsp_connections' ) ) : [];
 		foreach ( $connections as $connection ) {

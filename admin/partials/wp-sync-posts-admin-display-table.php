@@ -10,18 +10,6 @@
  * @package    Wp_Sync_Posts
  * @subpackage Wp_Sync_Posts/admin/partials
  */
-// $existing_connections = [
-// 	[
-// 			'ID' => 1,
-// 		'name'         => 'Connection 1',
-// 		'url'          => 'test-site-9.staging.motiontactic.com',
-// 		'key'          => 'asfASDasdaSSD',
-// 		'find_replace' => [
-// 			[ '://test-site-9.d.mt.com:8080', '://test-site-9.staging.motiontactic.com' ],
-// 			[ '/some/file/path', '/some/other/file/path' ],
-// 		]
-// 	]
-// ];
 ?>
 <table class="wp-list-table widefat fixed striped table-view-list options">
 	<thead>

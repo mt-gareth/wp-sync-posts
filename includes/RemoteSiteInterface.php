@@ -25,7 +25,7 @@ class RemoteSiteInterface
 	public function __construct( $url, $key )
 	{
 		$this->url = $url;
-		//todo find a better wat to get the admin ajax url
+		//todo find a better wat to get the admin ajax urlhow wp-sync db does it
 		$this->ajax_url = $this->url . '/wp-admin/admin-ajax.php';
 		$this->key = $key;
 	}
@@ -36,6 +36,7 @@ class RemoteSiteInterface
 	 */
 	public function send( $data )
 	{
+		//todo hash the message before we send and unhash the response before I send it back
 		$response = wp_remote_post( $this->ajax_url, array(
 				'method'   => 'POST',
 				'blocking' => true,

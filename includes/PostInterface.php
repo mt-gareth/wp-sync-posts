@@ -148,6 +148,7 @@ class PostInterface
 			$images[] = [ 'location' => '_thumbnail_id', 'current_value' => $val, 'image_url' => wp_get_original_image_url( $val ) ];
 		}
 
+
 		//TODO add action to allow for other images to be found
 
 		return $images;
