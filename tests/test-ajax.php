@@ -285,7 +285,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 
 	}
 
-	
+
 	private function assertConnectionMatchForm($current_connection, $form)
 	{
 		$this->assertEquals( $current_connection->name, $form[ 'name' ] );
