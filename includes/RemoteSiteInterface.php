@@ -25,18 +25,17 @@ class RemoteSiteInterface
 	public function __construct( $url, $key )
 	{
 		$this->url = $url;
-		//todo find a better wat to get the admin ajax urlhow wp-sync db does it
 		$this->ajax_url = $this->url . '/wp-admin/admin-ajax.php';
 		$this->key = $key;
 	}
 
 	/**
 	 * @param array $data
-	 * @return array|mixed
+	 * @return array
 	 */
 	public function send( $data )
 	{
-		//todo hash the message before we send and unhash the response before I send it back
+		$data['sig'] = self::create_signature($data, $this->key);
 		$response = wp_remote_post( $this->ajax_url, array(
 				'method'   => 'POST',
 				'blocking' => true,
@@ -48,10 +47,21 @@ class RemoteSiteInterface
 		if ( is_wp_error( $response ) ) {
 			$error_message = $response->get_error_message();
 			error_log( print_r( $error_message, true ) );
-			return ['success' => false];
+			return [ 'success' => false, 'data' => 'There was an error trying to connect to remote url: ' . $this->ajax_url ];
 		}
 
-		return json_decode( $response[ 'body' ], true );
+		if ( $response['body'] === '0' ) {
+			return [ 'success' => false, 'data' => 'WP Sync Posts Does not seem to be activated on the remote site.' ];
+		}
+
+		$return = json_decode( $response[ 'body' ], true );
+		if(!$return['success']) return $return;
+
+		if(!self::verify_signature($return['data'], $this->key)) {
+			return [ 'success' => false, 'data' => 'Invalid content verification signature, please verify the connection information on the remote site and try again.' ];
+		}
+
+		return $return;
 	}
 
 	/**
@@ -100,4 +110,27 @@ class RemoteSiteInterface
 			'manual_post_id'        => $manual_post_id
 		] );
 	}
+
+
+
+	public static function create_signature( $data, $key ) {
+		if ( isset( $data['sig'] ) ) {
+			unset( $data['sig'] );
+		}
+		$flat_data = implode( '', $data );
+		return base64_encode( hash_hmac( 'sha1', $flat_data, $key, true ) );
+	}
+
+	public static function verify_signature( $data, $key ) {
+		if( empty( $data['sig'] ) ) {
+			return false;
+		}
+		if ( isset( $data['nonce'] ) ) {
+			unset( $data['nonce'] );
+		}
+		$temp = $data;
+		$computed_signature = self::create_signature( $temp, $key );
+		return $computed_signature === $data['sig'];
+	}
+
 }

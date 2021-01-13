@@ -30,6 +30,7 @@ class Ajax
 	{
 		return $this->actions;
 	}
+
 	/**
 	 * Register Ajax Endpoints for the admin area.
 	 *
@@ -148,10 +149,11 @@ class Ajax
 		$verify_nonce = check_ajax_referer( 'wpsp-connection', 'nonce', false );
 		if ( $verify_nonce === false ) wp_send_json_error( 'This session did not verify. Please try again.' );
 
+		if ( !array_key_exists( 'url', $_REQUEST ) ) wp_send_json_error( 'The URL is not provided or valid' );
+		if ( !array_key_exists( 'key', $_REQUEST ) ) wp_send_json_error( 'The key is not provided or valid' );
+
 		$url = esc_url_raw( $_REQUEST[ 'url' ] );
 		$key = esc_textarea( $_REQUEST[ 'key' ] );
-		if ( !$url ) wp_send_json_error( 'The URL is not provided or valid' );
-		if ( !$key ) wp_send_json_error( 'The key is not provided or valid' );
 
 		$remote_site = new RemoteSiteInterface( $url, $key );
 		$validate = $remote_site->validate();
@@ -184,7 +186,7 @@ class Ajax
 		} else {
 			$remote_post_data = $remote_site->send_pull_request( $remote_post_selection, $local_post->get_slug(), $manual_post_id );
 			if ( !$remote_post_data[ 'success' ] ) wp_send_json_error( 'There was an error while sending request ' . print_r( $remote_post_data[ 'data' ], true ) );
-			$local_post->set_post_data( $remote_post_data[ 'data' ], $this->reverse_find_replace( $connection->find_replace ) );
+			$local_post->set_post_data( $remote_post_data[ 'data' ]['local_post_data'], $this->reverse_find_replace( $connection->find_replace ) );
 		}
 		wp_send_json_success();
 	}

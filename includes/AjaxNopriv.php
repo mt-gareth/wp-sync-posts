@@ -23,12 +23,28 @@ class AjaxNopriv
 	}
 
 	/**
-	 * @param string $key
-	 * @return bool
+	 *
 	 */
-	private function validate_key( $key )
+	private function validate_key()
 	{
-		return $key === get_option( 'wpsp_key' );
+		$key = esc_textarea( $_REQUEST[ 'key' ] );
+		$valid = $key === get_option( 'wpsp_key' );
+		if ( !$valid ) wp_send_json_error( 'Key did not validate' );
+	}
+
+	private function validate_sig( $filtered_post )
+	{
+		$valid = RemoteSiteInterface::verify_signature( $filtered_post, get_option( 'wpsp_key' ) );
+		if ( !$valid ) wp_send_json_error( 'Sig did not validate' );
+	}
+
+	private function filter_post_elements( $post_array, $accepted_elements )
+	{
+		if ( isset( $post_array[ 'form_data' ] ) ) {
+			$post_array[ 'form_data' ] = stripslashes( $post_array[ 'form_data' ] );
+		}
+		$accepted_elements[] = 'sig';
+		return array_intersect_key( $post_array, array_flip( $accepted_elements ) );
 	}
 
 	/**
@@ -36,10 +52,16 @@ class AjaxNopriv
 	 */
 	public function ajax_nopriv_validate()
 	{
-		$key = esc_textarea( $_REQUEST[ 'key' ] );
-		$valid = $this->validate_key( $key );
-		if ( $valid ) wp_send_json_success( $valid );
-		wp_send_json_error( $valid );
+		$filtered_post = $this->filter_post_elements( $_POST, [ 'action', 'key' ] );
+		$this->validate_key();
+		$this->validate_sig( $filtered_post );
+
+		$data = [
+			'allow_pull' => get_option( 'wpsp_allow_pull' ),
+			'allow_push' => get_option( 'wpsp_allow_push' ),
+		];
+		$data[ 'sig' ] = RemoteSiteInterface::create_signature( $data, get_option( 'wpsp_key' ) );
+		wp_send_json_error( 'Key is valid' );
 	}
 
 	/**
@@ -47,11 +69,11 @@ class AjaxNopriv
 	 */
 	public function ajax_nopriv_accept_push_request()
 	{
-		$key = esc_textarea( $_REQUEST[ 'key' ] );
-		$valid = $this->validate_key( $key );
-		if ( !$valid ) wp_send_json_error( 'Key did not validate' );
+		$filtered_post = $this->filter_post_elements( $_POST, [ 'action', 'key', 'local_post_data', 'find_replace', 'remote_post_selection', 'manual_post_id' ] );
+		$this->validate_key();
+		$this->validate_sig( $filtered_post );
 
-		if(!get_option( 'wpsp_allow_push' )) wp_send_json_error( 'This site does not allow Push' );
+		if ( !get_option( 'wpsp_allow_push' ) ) wp_send_json_error( 'This site does not allow Push' );
 
 		$remote_post_data = $_REQUEST[ 'local_post_data' ];
 		$find_replace = $_REQUEST[ 'find_replace' ] ?: [];
@@ -63,14 +85,18 @@ class AjaxNopriv
 		}
 
 		if ( $post_selection === 'new' ) {
-			$post_id = PostInterface::create_blank_post($remote_post_data['type']);
+			$post_id = PostInterface::create_blank_post( $remote_post_data[ 'type' ] );
 		}
 
 		if ( !$post_id ) wp_send_json_error( 'Post not found' );
 
 		$local_post = new PostInterface( $post_id );
 		$local_post->set_post_data( $remote_post_data, $find_replace );
-		wp_send_json_success();
+		$data = [
+			'local_post_id' => $post_id,
+		];
+		$data[ 'sig' ] = RemoteSiteInterface::create_signature( $data, get_option( 'wpsp_key' ) );
+		wp_send_json_success($data);
 	}
 
 	/**
@@ -78,11 +104,11 @@ class AjaxNopriv
 	 */
 	public function ajax_nopriv_accept_pull_request()
 	{
-		$key = esc_textarea( $_REQUEST[ 'key' ] );
-		$valid = $this->validate_key( $key );
-		if ( !$valid ) wp_send_json_error( 'Key did not validate' );
+		$filtered_post = $this->filter_post_elements( $_POST, [ 'action', 'key', 'remote_post_selection', 'post_slug', 'manual_post_id' ] );
+		$this->validate_key();
+		$this->validate_sig( $filtered_post );
 
-		if(!get_option( 'wpsp_allow_pull' )) wp_send_json_error( 'This site does not allow Pull' );
+		if ( !get_option( 'wpsp_allow_pull' ) ) wp_send_json_error( 'This site does not allow Pull' );
 
 		$post_selection = esc_textarea( $_REQUEST[ 'remote_post_selection' ] );
 		$slug = esc_textarea( $_REQUEST[ 'post_slug' ] );
@@ -95,8 +121,11 @@ class AjaxNopriv
 		if ( !$post_id ) wp_send_json_error( 'Post not found' );
 
 		$local_post = new PostInterface( $post_id );
-		$local_data = $local_post->get_post_data();
-		wp_send_json_success( $local_data );
+		$data = [
+			'local_post_data' => $local_post->get_post_data(),
+		];
+		$data[ 'sig' ] = RemoteSiteInterface::create_signature( $data, get_option( 'wpsp_key' ) );
+		wp_send_json_success($data);
 	}
 
 }

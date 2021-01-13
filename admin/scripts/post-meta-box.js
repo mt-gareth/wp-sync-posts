@@ -134,6 +134,7 @@ export default {
 
         this.confirmButton.click((e) => {
             e.preventDefault();
+            //TODO maybe add a is dirty check to see if the page has unsaved changes to remind them to save the post if they want
             this.ajaxSendRequest();
         });
     },

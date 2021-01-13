@@ -6,6 +6,7 @@
  */
 
 use WPSP\Ajax;
+use WPSP\RemoteSiteInterface;
 
 /**
  * Sample test case.
@@ -35,7 +36,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 			$this->_handleAjax( $endpoint );
 		} catch ( WPAjaxDieContinueException $e ) {
 		}
-		$this->assertTrue( isset( $e ) );
+		$this->assertTrue( isset( $e ), 'We should have an error because the end of an ajax should have a wp_die' );
 		return json_decode( $this->_last_response );
 	}
 
@@ -48,7 +49,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		$prefix = $this->class->get_prefix();
 		$actions = $this->class->get_actions();
 		foreach ( $actions as $action ) {
-			$this->assertTrue( has_action( $prefix . $action, [ $this->class, 'ajax_' . $action ] ) !== false );
+			$this->assertTrue( has_action( $prefix . $action, [ $this->class, 'ajax_' . $action ] ) !== false, 'The action ' . $action . ' was not found' );
 		}
 	}
 
@@ -60,7 +61,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 
 		$response = $this->send_ajax( 'wpsp_update_setting' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because a nonce is not provided' );
 	}
 
 	public function test_ajax_update_setting_fail_if_nonce_wrong()
@@ -68,7 +69,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 		$_POST[ 'nonce' ] = wp_create_nonce( 'wrong' );
 		$response = $this->send_ajax( 'wpsp_update_setting' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the nonce is wrong' );
 	}
 
 	public function test_ajax_update_setting_fails_user_is_not_editor()
@@ -81,7 +82,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		wp_set_current_user( $this->factory()->user->create() );
 
 		$response = $this->send_ajax( 'wpsp_update_setting' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the user is not an editor or higher' );
 	}
 
 	public function test_ajax_update_setting_works()
@@ -92,8 +93,8 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		$_POST[ 'value' ] = 1;
 
 		$response = $this->send_ajax( 'wpsp_update_setting' );
-		$this->assertTrue( $response->success );
-		$this->assertEquals( get_option( 'wpsp_allow_pull' ), '1' );
+		$this->assertTrue( $response->success, 'We should receive a success message' );
+		$this->assertEquals( get_option( 'wpsp_allow_pull' ), '1', 'The setting was set correctly' );
 	}
 
 	public function test_ajax_update_setting_works_with_other_value()
@@ -104,8 +105,8 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		$_POST[ 'value' ] = 0;
 
 		$response = $this->send_ajax( 'wpsp_update_setting' );
-		$this->assertTrue( $response->success );
-		$this->assertEquals( get_option( 'wpsp_allow_pull' ), '0' );
+		$this->assertTrue( $response->success, 'We should receive a success message' );
+		$this->assertEquals( get_option( 'wpsp_allow_pull' ), '0', 'The setting was set correctly' );
 	}
 
 	/************************* ajax_reset_key ******************************
@@ -116,7 +117,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 
 		$response = $this->send_ajax( 'wpsp_reset_key' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because a nonce is not provided' );
 	}
 
 	public function test_ajax_reset_key_fail_if_nonce_wrong()
@@ -124,7 +125,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 		$_POST[ 'nonce' ] = wp_create_nonce( 'wrong' );
 		$response = $this->send_ajax( 'wpsp_reset_key' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the nonce is wrong' );
 	}
 
 	public function test_ajax_reset_key_fails_user_is_not_editor()
@@ -135,7 +136,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		wp_set_current_user( $this->factory()->user->create() );
 
 		$response = $this->send_ajax( 'wpsp_reset_key' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the user is not an editor or higher' );
 	}
 
 	public function test_ajax_reset_key_works_with_other_value()
@@ -146,10 +147,10 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		$old_key = get_option( 'wpsp_key' );
 
 		$response = $this->send_ajax( 'wpsp_reset_key' );
-		$this->assertTrue( $response->success );
-		$this->assertNotEquals( get_option( 'wpsp_key' ), $old_key );
+		$this->assertTrue( $response->success, 'We should receive a success message' );
+		$this->assertNotEquals( get_option( 'wpsp_key' ), $old_key, 'The new key is different' );
 
-		$this->assertEquals( get_option( 'wpsp_key' ), $response->data );
+		$this->assertEquals( get_option( 'wpsp_key' ), $response->data, 'The returned key is the same as the DB option' );
 	}
 
 	/************************* ajax_add_update_connection ******************************
@@ -160,7 +161,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 
 		$response = $this->send_ajax( 'wpsp_add_update_connection' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because a nonce is not provided' );
 	}
 
 	public function test_ajax_add_update_connection_fail_if_nonce_wrong()
@@ -168,7 +169,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 		$_POST[ 'nonce' ] = wp_create_nonce( 'wrong' );
 		$response = $this->send_ajax( 'wpsp_add_update_connection' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the nonce is wrong' );
 	}
 
 	public function test_ajax_add_update_connection_fails_user_is_not_editor()
@@ -179,7 +180,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		wp_set_current_user( $this->factory()->user->create() );
 
 		$response = $this->send_ajax( 'wpsp_add_update_connection' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the user is not an editor or higher' );
 	}
 
 	public function test_ajax_add_update_connection_add_new_connection()
@@ -206,13 +207,79 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		$_POST[ 'form' ] = http_build_query( $form );
 
 		$response = $this->send_ajax( 'wpsp_add_update_connection' );
-		$this->assertTrue( $response->success );
-		$this->assertEquals( $response->data, json_decode( get_option( 'wpsp_connections' ) ) );
+		$this->assertTrue( $response->success, 'We should receive a success message' );
+		$this->assertEquals( $response->data, json_decode( get_option( 'wpsp_connections' ) ), 'The returned connections match the DB connections' );
 		$current_connection = $response->data[ 0 ];
-		$this->assertConnectionMatchForm($current_connection, $form);
+		$this->assertConnectionMatchForm( $current_connection, $form );
 	}
 
 	public function test_ajax_add_update_connection_update_existing_connection()
+	{
+		$this->set_base_connections_option();
+
+		global $_POST;
+		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
+
+		$form = [
+			'connection-id' => '2',
+			'name'          => 'Test Connection 1',
+			'url'           => 'test-site-1.com',
+			'key'           => '123wer',
+			'find-replace'  => [
+				[
+					'find'    => 'find-1',
+					'replace' => 'replace-1'
+				],
+				[
+					'find'    => 'find-2',
+					'replace' => 'replace-2'
+				],
+			]
+		];
+		$_POST[ 'form' ] = http_build_query( $form );
+
+		$response = $this->send_ajax( 'wpsp_add_update_connection' );
+		$this->assertTrue( $response->success, 'We should receive a success message' );
+		$this->assertEquals( $response->data, json_decode( get_option( 'wpsp_connections' ) ) );
+
+		$current_connection = false;
+		foreach ( $response->data as $returned_connections ) {
+			if ( $returned_connections->ID === (int)$form[ 'connection-id' ] ) $current_connection = $returned_connections;
+		}
+		$this->assertNotEquals( $current_connection, false );
+		$this->assertConnectionMatchForm( $current_connection, $form );
+	}
+
+	public function test_ajax_add_update_connection_update_existing_connection_fail_wrong_id()
+	{
+		$this->set_base_connections_option();
+
+		global $_POST;
+		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
+
+		$form = [
+			'connection-id' => '6',
+			'name'          => 'Test Connection 1',
+			'url'           => 'test-site-1.com',
+			'key'           => '123wer',
+			'find-replace'  => [
+				[
+					'find'    => 'find-1',
+					'replace' => 'replace-1'
+				],
+				[
+					'find'    => 'find-2',
+					'replace' => 'replace-2'
+				],
+			]
+		];
+		$_POST[ 'form' ] = http_build_query( $form );
+
+		$response = $this->send_ajax( 'wpsp_add_update_connection' );
+		$this->assertFalse( $response->success );
+	}
+
+	private function set_base_connections_option()
 	{
 		$old_connections = [
 			[
@@ -250,43 +317,10 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		];
 
 		update_option( 'wpsp_connections', json_encode( $old_connections ), false );
-
-		global $_POST;
-		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
-
-		$form = [
-			'connection-id' => '2',
-			'name'          => 'Test Connection 1',
-			'url'           => 'test-site-1.com',
-			'key'           => '123wer',
-			'find-replace'  => [
-				[
-					'find'    => 'find-1',
-					'replace' => 'replace-1'
-				],
-				[
-					'find'    => 'find-2',
-					'replace' => 'replace-2'
-				],
-			]
-		];
-		$_POST[ 'form' ] = http_build_query( $form );
-
-		$response = $this->send_ajax( 'wpsp_add_update_connection' );
-		$this->assertTrue( $response->success );
-		$this->assertEquals( $response->data, json_decode( get_option( 'wpsp_connections' ) ) );
-
-		$current_connection = false;
-		foreach ($response->data as $returned_connections) {
-			if($returned_connections->ID === (int)$form['connection-id']) $current_connection = $returned_connections;
-		}
-		$this->assertNotEquals( $current_connection, false );
-		$this->assertConnectionMatchForm($current_connection, $form);
-
 	}
 
 
-	private function assertConnectionMatchForm($current_connection, $form)
+	private function assertConnectionMatchForm( $current_connection, $form )
 	{
 		$this->assertEquals( $current_connection->name, $form[ 'name' ] );
 		$this->assertStringContainsString( $form[ 'url' ], $current_connection->url );
@@ -297,9 +331,6 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		$this->assertEquals( $current_connection->find_replace[ 1 ][ 1 ], $form[ 'find-replace' ][ 1 ][ 'replace' ] );
 	}
 
-
-	//update an existing connection
-
 	/************************* ajax_delete_connection ******************************
 	 */
 
@@ -308,7 +339,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 
 		$response = $this->send_ajax( 'wpsp_delete_connection' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because a nonce is not provided' );
 	}
 
 	public function test_ajax_delete_connection_fail_if_nonce_wrong()
@@ -316,26 +347,43 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 		$_POST[ 'nonce' ] = wp_create_nonce( 'wrong' );
 		$response = $this->send_ajax( 'wpsp_delete_connection' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the nonce is wrong' );
 	}
 
 	public function test_ajax_delete_connection_fails_user_is_not_editor()
 	{
 		global $_POST;
 		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
-		$_POST[ 'setting' ] = 'wpsp_allow_pull';
-		$_POST[ 'value' ] = 1;
-
+		$_POST[ 'connection_id' ] = '1';
 		wp_set_current_user( $this->factory()->user->create() );
 
 		$response = $this->send_ajax( 'wpsp_delete_connection' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the user is not an editor or higher' );
 	}
 
-	//todo functionality test
-	//test fail if connection id does not exisit
-	//test success
+	public function test_ajax_delete_connection_fails_when_wrong_id_sent()
+	{
+		$this->set_base_connections_option();
+		global $_POST;
+		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
+		$_POST[ 'connection_id' ] = '6';
 
+		$response = $this->send_ajax( 'wpsp_delete_connection' );
+		$this->assertFalse( $response->success, 'This should fail because the connection ID does not exist' );
+	}
+
+	public function test_ajax_delete_connection_works()
+	{
+		$this->set_base_connections_option();
+		$base_connections = json_decode( get_option( 'wpsp_connections' ), true );
+		global $_POST;
+		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
+		$_POST[ 'connection_id' ] = '1';
+
+		$response = $this->send_ajax( 'wpsp_delete_connection' );
+		$this->assertTrue( $response->success, 'We should get a success message after we deleted the connection' );
+		$this->assertCount( count( $base_connections ) - 1, $response->data, 'The connections should be ' . count( $base_connections ) - 1 . ' now' );
+	}
 
 	/************************* ajax_check_remote_url ******************************
 	 */
@@ -345,7 +393,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 
 		$response = $this->send_ajax( 'wpsp_check_remote_url' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because a nonce is not provided' );
 	}
 
 	public function test_ajax_check_remote_url_fail_if_nonce_wrong()
@@ -353,23 +401,71 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 		$_POST[ 'nonce' ] = wp_create_nonce( 'wrong' );
 		$response = $this->send_ajax( 'wpsp_check_remote_url' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the nonce is wrong' );
 	}
 
 	public function test_ajax_check_remote_url_fails_user_is_not_editor()
 	{
 		global $_POST;
 		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
-		$_POST[ 'setting' ] = 'wpsp_allow_pull';
-		$_POST[ 'value' ] = 1;
+
 
 		wp_set_current_user( $this->factory()->user->create() );
 
 		$response = $this->send_ajax( 'wpsp_check_remote_url' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the user is not an editor or higher' );
 	}
 
-	//todo functionality test
+	public function test_ajax_check_remote_url_fails_key_not_set()
+	{
+		global $_POST;
+		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
+		$_POST[ 'setting' ] = 'wpsp_allow_pull';
+		$_POST[ 'url' ] = 'https://url.com';
+		//$_POST[ 'key' ] = 'asdfasdf';
+
+		$response = $this->send_ajax( 'wpsp_check_remote_url' );
+		$this->assertFalse( $response->success, 'This should fail because the key was not provided' );
+	}
+
+	public function test_ajax_check_remote_url_fails_url_not_set()
+	{
+		global $_POST;
+		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
+		$_POST[ 'setting' ] = 'wpsp_allow_pull';
+		//$_POST[ 'url' ] = 'https://url.com';
+		$_POST[ 'key' ] = 'asdfasdf';
+
+		$response = $this->send_ajax( 'wpsp_check_remote_url' );
+		$this->assertFalse( $response->success, 'This should fail because the url was not provided' );
+	}
+
+	//todo figure out hot to Mock classes to test functionality
+
+	// public function test_ajax_check_remote_url_fails_when_response_returns_fail()
+	// {
+	// 	global $_POST;
+	// 	$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-connection' );
+	// 	$_POST[ 'setting' ] = 'wpsp_allow_pull';
+	// 	$_POST[ 'url' ] = 'https://url.com';
+	// 	$_POST[ 'key' ] = 'asdfasdf';
+	//
+	// 	// $mock = \Mockery::mock('overload:RemoteSiteInterface');
+	// 	// $mock->shouldreceive('validate')->andReturn(['success' => false, 'data' => false]);
+	//
+	// 	$mock = $this->getMockBuilder( 'WPSP\RemoteSiteInterface' )
+	// 		->disableOriginalConstructor()
+	// 		->setMethods( [ 'send' ] )
+	// 		->getMock();
+	//
+	// 	$mock->expects( $this->any() )
+	// 		->method( 'send' )
+	// 		->will( $this->returnValue( [ 'success' => false, 'data' => 'false' ] ) );
+	//
+	// 	$response = $this->send_ajax( 'wpsp_check_remote_url' );
+	// 	$this->assertFalse( $response->success, 'This should fail because the return was not valid' );
+	// }
+
 
 	/************************* ajax_start_sync ******************************
 	 */
@@ -379,7 +475,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 
 		$response = $this->send_ajax( 'wpsp_start_sync' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because a nonce is not provided' );
 	}
 
 	public function test_ajax_start_sync_fail_if_nonce_wrong()
@@ -387,7 +483,7 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 		$_POST[ 'nonce' ] = wp_create_nonce( 'wrong' );
 		$response = $this->send_ajax( 'wpsp_start_sync' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the nonce is wrong' );
 	}
 
 	public function test_ajax_start_sync_fails_user_is_not_editor()
@@ -395,12 +491,11 @@ class TestAjax extends \WP_Ajax_UnitTestCase
 		global $_POST;
 		$_POST[ 'nonce' ] = wp_create_nonce( 'wpsp-sync' );
 		$_POST[ 'setting' ] = 'wpsp_allow_pull';
-		$_POST[ 'value' ] = 1;
 
 		wp_set_current_user( $this->factory()->user->create() );
 
 		$response = $this->send_ajax( 'wpsp_start_sync' );
-		$this->assertFalse( $response->success );
+		$this->assertFalse( $response->success, 'This should fail because the user is not an editor or higher' );
 	}
 
 	//todo functionality test
