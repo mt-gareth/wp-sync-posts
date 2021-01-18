@@ -7,12 +7,12 @@ class Ajax
 	/**
 	 * @var string
 	 */
-	private string $prefix = 'wp_ajax_wpsp_';
+	private $prefix = 'wp_ajax_wpsp_';
 
 	/**
 	 * @var array
 	 */
-	private array $actions = [
+	private $actions = [
 		'update_setting',
 		'reset_key',
 		'add_update_connection',
@@ -186,7 +186,7 @@ class Ajax
 		} else {
 			$remote_post_data = $remote_site->send_pull_request( $remote_post_selection, $local_post->get_slug(), $manual_post_id );
 			if ( !$remote_post_data[ 'success' ] ) wp_send_json_error( 'There was an error while sending request ' . print_r( $remote_post_data[ 'data' ], true ) );
-			$local_post->set_post_data( $remote_post_data[ 'data' ]['local_post_data'], $this->reverse_find_replace( $connection->find_replace ) );
+			$local_post->set_post_data( $remote_post_data[ 'data' ][ 'local_post_data' ], $this->reverse_find_replace( $connection->find_replace ) );
 		}
 		wp_send_json_success();
 	}

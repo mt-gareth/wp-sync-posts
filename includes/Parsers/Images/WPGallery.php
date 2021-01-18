@@ -43,14 +43,13 @@ class WPGallery
 			}
 		}
 
-		$images = [ ...$images, ...$gallery_images ];
-
+		$images = array_merge( $images, $gallery_images );
 		return $images;
 	}
 
 	private function search_for_gallery( $content )
 	{
-		return Helpers::find_shortcodes($content, 'gallery');
+		return Helpers::find_shortcodes( $content, 'gallery' );
 	}
 
 	private function get_gallery_images( $content_gallery )
