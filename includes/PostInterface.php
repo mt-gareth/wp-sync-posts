@@ -97,60 +97,8 @@ class PostInterface
 	public function get_all_images()
 	{
 		$images = [];
-		//loop through all the meta and content looking for image urls that have the same domain as this site
-		$content_images = $this->find_local_images( $this->get_content() );
-		foreach ( $content_images as $content_image_index => $content_image ) {
-			$content_image[ 'location' ] = 'content';
-			$images[] = $content_image;
-		}
-
-		$meta = $this->get_meta();
-		foreach ( $meta as $meta_key => $meta_array ) {
-			foreach ( $meta_array as $meta_val ) {
-				$meta_images = $this->find_local_images( $meta_val );
-				if ( empty( $meta_images ) ) continue;
-				foreach ( $meta_images as $meta_image_index => $meta_image ) {
-					$meta_image[ 'location' ] = $meta_key;
-					$images[] = $meta_image;
-				}
-			}
-		}
-
-		//if we have ACF lets loop through the field keys and look for galleries and image fields, so we can swap out IDs
-		if ( function_exists( 'get_field_object' ) ) {
-			foreach ( $meta as $meta_key => $meta_array ) {
-				foreach ( $meta_array as $meta_val ) {
-					//if $meta_val !begins with 'field_' continue
-					if ( substr( $meta_val, 0, 6 ) !== 'field_' || substr( $meta_key, 0, 1 ) !== '_' ) continue;
-					$original_key = substr( $meta_key, 1 );
-					$field_object = get_field_object( $meta_val, $this->post_id, false, false );
-					$val = get_field( $original_key, $this->post_id, false );
-					if ( !$val ) continue;
-					if ( !$field_object ) continue;
-					switch ( $field_object[ 'type' ] ) {
-						case 'image':
-							$images[] = [ 'location' => $original_key, 'current_value' => $val, 'image_url' => wp_get_original_image_url( $val ) ];
-							break;
-						case 'gallery':
-							foreach ( $val as $gallery_image ) {
-								$images[] = [ 'location' => $original_key, 'current_value' => $gallery_image, 'image_url' => wp_get_original_image_url( $gallery_image ) ];
-							}
-							break;
-						//TODO add action to allow for other fields to be grabbed
-					}
-				}
-			}
-		}
-
-		//handle featured image
-		if ( array_key_exists( '_thumbnail_id', $meta ) ) {
-			$val = $meta[ '_thumbnail_id' ][ 0 ];
-			$images[] = [ 'location' => '_thumbnail_id', 'current_value' => $val, 'image_url' => wp_get_original_image_url( $val ) ];
-		}
-
-
-		//TODO add action to allow for other images to be found
-
+		$images = apply_filters( 'wpsp_find_images', $images, $this );
+		$images = array_unique( $images, SORT_REGULAR );
 		return $images;
 	}
 
@@ -273,6 +221,11 @@ class PostInterface
 			$find = $image[ 'current_value' ];
 			$is_find_id = is_numeric( $find );
 			$replace = $is_find_id ? $local_image_data[ 'image_id' ] : $local_image_data[ 'image_url' ];
+			if ( array_key_exists( 'shortcode', $image ) ) {
+				$remote_post_data = $this->find_replace_shortcode_images( $remote_post_data, $image, $replace );
+				continue;
+			}
+
 			if ( $image[ 'location' ] === 'content' ) {
 				$remote_post_data[ 'content' ] = str_replace( $find, $replace, $remote_post_data[ 'content' ] );
 				continue;
@@ -285,6 +238,24 @@ class PostInterface
 		$this->set_content( $remote_post_data[ 'content' ] );
 		$this->set_meta( $remote_post_data[ 'meta' ] );
 		$this->set_terms( $remote_post_data[ 'terms' ] );
+	}
+
+	private function find_replace_shortcode_images( $remote_post_data, $image, $replace )
+	{
+		$find_content = $image[ 'location' ] === 'content' ? $remote_post_data[ 'content' ] : $remote_post_data[ 'meta' ][ $image[ 'location' ] ][0];
+		$shortcodes = Helpers::find_shortcodes( $find_content, $image[ 'shortcode' ] );
+		//TODO test this guy hard core, I dont think its working
+		foreach ( $shortcodes as $shortcode ) {
+			$new_shortcode = str_replace( $image[ 'current_value' ], $replace, $shortcode );
+			error_log('Find ' . $shortcode . ' - Replace ' . $new_shortcode);
+			if ( $image[ 'location' ] === 'content' ) {
+				$remote_post_data[ 'content' ] = str_replace( $shortcode, $new_shortcode, $find_content );
+				continue;
+			}
+			$remote_post_data[ 'meta' ][ $image[ 'location' ] ][0] = str_replace( $shortcode, $new_shortcode, $find_content );
+
+		}
+		return $remote_post_data;
 	}
 
 	/**
@@ -444,6 +415,14 @@ class PostInterface
 			'post_status' => 'publish',
 			'post_type'   => $type,
 		] );
+	}
+
+	/**
+	 * @return int
+	 */
+	public function get_post_id()
+	{
+		return $this->post_id;
 	}
 
 

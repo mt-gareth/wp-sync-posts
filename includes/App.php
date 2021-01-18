@@ -77,8 +77,9 @@ class App
 			$this->version = '1.0.0';
 		}
 		$this->plugin_name = 'wp-sync-posts';
+		$this->loader = new Loader();
 
-		$this->load_dependencies();
+		$this->load_parsers();
 		$this->set_locale();
 		$this->define_admin_hooks();
 		$this->define_ajax_hooks();
@@ -86,60 +87,18 @@ class App
 	}
 
 	/**
-	 * Load the required dependencies for this plugin.
-	 *
-	 * Include the following files that make up the plugin:
-	 *
-	 * - Wp_Sync_Posts_Loader. Orchestrates the hooks of the plugin.
-	 * - Wp_Sync_Posts_i18n. Defines internationalization functionality.
-	 * - Wp_Sync_Posts_Admin. Defines all hooks for the admin area.
-	 * - Wp_Sync_Posts_Public. Defines all hooks for the public side of the site.
-	 *
-	 * Create an instance of the loader which will be used to register the hooks
-	 * with WordPress.
+	 * Load the required parsers for this plugin.
 	 *
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function load_dependencies()
+	private function load_parsers()
 	{
-		$path = plugin_dir_path( dirname( __FILE__ ) );
-		$inc_path = $path . 'includes/';
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
-		require_once  $inc_path . 'Loader.php';
-
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
-		require_once $inc_path . 'i18n.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
-		require_once $inc_path . 'Admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in ajax
-		 */
-		require_once $inc_path . 'Ajax.php';
-		require_once $inc_path . 'AjaxNopriv.php';
-
-		/**
-		 * The class responsible for interfacing with Posts
-		 */
-		require_once $inc_path . 'PostInterface.php';
-
-		/**
-		 * The class responsible for interfacing with the remote site
-		 */
-		require_once $inc_path . 'RemoteSiteInterface.php';
-
-		$this->loader = new Loader();
-
+		new Parsers\Images\ACF;
+		new Parsers\Images\ContentUrl;
+		new Parsers\Images\FeaturedImage;
+		new Parsers\Images\MetaUrl;
+		new Parsers\Images\WPGallery;
 	}
 
 	/**

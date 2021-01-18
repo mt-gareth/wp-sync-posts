@@ -1,0 +1,15 @@
+{
+    "name": "motiontactic/wp-sync-posts",
+    "authors": [
+        {
+            "name": "Gareth McDonald",
+            "email": "gareth@motiontactic.com"
+        }
+    ],
+    "require": {},
+  "autoload": {
+    "psr-4": {
+      "WPSP\\": "includes"
+    }
+  }
+}

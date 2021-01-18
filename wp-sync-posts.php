@@ -59,10 +59,9 @@ register_activation_hook( __FILE__, 'activate_wp_sync_posts' );
 register_deactivation_hook( __FILE__, 'deactivate_wp_sync_posts' );
 
 /**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
+ * Autoload of all the files we need
  */
-require plugin_dir_path( __FILE__ ) . 'includes/App.php';
+require plugin_dir_path( __FILE__ ) .'vendor/autoload.php';
 
 /**
  * Begins execution of the plugin.
