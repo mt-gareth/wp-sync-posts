@@ -53,6 +53,8 @@ class AjaxNopriv
 	public function ajax_nopriv_validate()
 	{
 		$filtered_post = $this->filter_post_elements( $_POST, [ 'action', 'key' ] );
+
+
 		$this->validate_key();
 		$this->validate_sig( $filtered_post );
 
@@ -61,7 +63,9 @@ class AjaxNopriv
 			'allow_push' => get_option( 'wpsp_allow_push' ),
 		];
 		$data[ 'sig' ] = RemoteSiteInterface::create_signature( $data, get_option( 'wpsp_key' ) );
-		wp_send_json_error( 'Key is valid' );
+		//error_log( print_r( $filtered_post, true ) );
+		//error_log( print_r( get_option( 'wpsp_key' ), true ) );
+		wp_send_json_success( $data );
 	}
 
 	/**
@@ -96,7 +100,7 @@ class AjaxNopriv
 			'local_post_id' => $post_id,
 		];
 		$data[ 'sig' ] = RemoteSiteInterface::create_signature( $data, get_option( 'wpsp_key' ) );
-		wp_send_json_success($data);
+		wp_send_json_success( $data );
 	}
 
 	/**
@@ -125,7 +129,7 @@ class AjaxNopriv
 			'local_post_data' => $local_post->get_post_data(),
 		];
 		$data[ 'sig' ] = RemoteSiteInterface::create_signature( $data, get_option( 'wpsp_key' ) );
-		wp_send_json_success($data);
+		wp_send_json_success( $data );
 	}
 
 }

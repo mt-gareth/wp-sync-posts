@@ -31,5 +31,16 @@
 		}
 	}
 
+	#error-message {
+		display: none;
+		font-weight: bold;
+		color: firebrick;
+		margin-bottom: 5px;
+
+		&.visible {
+			display: block;
+		}
+	}
+
 }
 

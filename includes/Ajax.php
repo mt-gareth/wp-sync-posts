@@ -82,6 +82,7 @@ class Ajax
 
 		$params = [];
 		parse_str( $_REQUEST[ 'form' ], $params );
+		error_log( print_r( $_REQUEST[ 'form' ] ) );
 
 		$connection = [
 			'ID'           => (int)esc_textarea( $params[ 'connection-id' ] ),
@@ -89,6 +90,7 @@ class Ajax
 			'url'          => esc_url_raw( $params[ 'url' ] ),
 			'key'          => esc_textarea( $params[ 'key' ] ),
 			'find_replace' => []
+			//add in allow push and pull
 		];
 
 		foreach ( $params[ 'find-replace' ] as $find_replace ) {
@@ -156,10 +158,12 @@ class Ajax
 		$key = esc_textarea( $_REQUEST[ 'key' ] );
 
 		$remote_site = new RemoteSiteInterface( $url, $key );
-		$validate = $remote_site->validate();
-		if ( !$validate[ 'success' ] ) wp_send_json_error( 'The url and key did not validate' . print_r( $validate[ 'data' ], true ) );
+		$remote_data = $remote_site->validate();
+		if ( !$remote_data[ 'success' ] ) wp_send_json_error( 'The url and key did not validate' . print_r( $remote_data[ 'data' ], true ) );
 
-		wp_send_json_success( $url );
+		$response_data = $remote_data;
+		$response_data[ 'url' ] = $url;
+		wp_send_json_success( $response_data );
 	}
 
 	public function ajax_start_sync()

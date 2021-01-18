@@ -17,7 +17,7 @@
  * Plugin URI:        motiontactic.com/wpsp
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
- * Author:            Gareth McDonald
+ * Author:            Gareth McDonald, Cathy Webb
  * Author URI:        motiontactic.com
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
@@ -26,7 +26,7 @@
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
+if ( !defined( 'WPINC' ) ) {
 	die;
 }
 
@@ -41,7 +41,8 @@ define( 'WP_SYNC_POSTS_VERSION', '1.0.0' );
  * The code that runs during plugin activation.
  * This action is documented in includes/class-wp-sync-posts-activator.php
  */
-function activate_wp_sync_posts() {
+function activate_wp_sync_posts()
+{
 	require_once plugin_dir_path( __FILE__ ) . 'includes/Activator.php';
 	\WPSP\Activator::activate();
 }
@@ -50,7 +51,8 @@ function activate_wp_sync_posts() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-wp-sync-posts-deactivator.php
  */
-function deactivate_wp_sync_posts() {
+function deactivate_wp_sync_posts()
+{
 	require_once plugin_dir_path( __FILE__ ) . 'includes/Deactivator.php';
 	\WPSP\Deactivator::deactivate();
 }
@@ -61,7 +63,7 @@ register_deactivation_hook( __FILE__, 'deactivate_wp_sync_posts' );
 /**
  * Autoload of all the files we need
  */
-require plugin_dir_path( __FILE__ ) .'vendor/autoload.php';
+require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 /**
  * Begins execution of the plugin.
@@ -72,10 +74,12 @@ require plugin_dir_path( __FILE__ ) .'vendor/autoload.php';
  *
  * @since    1.0.0
  */
-function run_wp_sync_posts() {
+function run_wp_sync_posts()
+{
 
 	$plugin = new \WPSP\App();
 	$plugin->run();
 
 }
+
 run_wp_sync_posts();

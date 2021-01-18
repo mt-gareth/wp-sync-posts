@@ -26,6 +26,12 @@
 		<th scope="col" id="option_options" class="manage-column column-options">
 			<span>Options</span>
 		</th>
+		<th scope="col" id="option_actions" class="manage-column column-actions">
+			<span>Actions</span>
+		</th>
+		<th scope="col" id="option_reload" class="manage-column column-reload-actions">
+			<span>Reload Actions</span>
+		</th>
 	</tr>
 	</thead>
 

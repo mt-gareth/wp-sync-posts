@@ -72,7 +72,11 @@ export default {
             type: 'post',
             dataType: 'json',
             url: wpsp.ajaxUrl,
-            data: {action: 'wpsp_add_update_connection', form: $$.serialize(), nonce: $('#wpsp-connection-nonce').val()},
+            data: {
+                action: 'wpsp_add_update_connection',
+                form: $$.serialize(),
+                nonce: $('#wpsp-connection-nonce').val()
+            },
             success: (response) => {
                 if (response.success) {
                     this.updateConnections(response.data);
@@ -126,7 +130,11 @@ export default {
             type: 'post',
             dataType: 'json',
             url: wpsp.ajaxUrl,
-            data: {action: 'wpsp_delete_connection', connection_id: connectionId, nonce: $('#wpsp-connection-nonce').val()},
+            data: {
+                action: 'wpsp_delete_connection',
+                connection_id: connectionId,
+                nonce: $('#wpsp-connection-nonce').val()
+            },
             success: (response) => {
                 if (response.success) {
                     this.updateConnections(response.data);
@@ -152,6 +160,7 @@ export default {
             success: (response) => {
                 if (response.success) {
                     this.setUrlMatch(response.data);
+                    $('#error-message').removeClass('visible');
                 } else {
                     this.showUrlMatchError();
                 }
@@ -163,10 +172,11 @@ export default {
         });
     },
 
-    setUrlMatch(url) {
+    setUrlMatch(responseData) {
+        console.log(responseData);
         let localUrl = window.location.hostname;
         if (window.location.port) localUrl += ':' + window.location.port;
-        let remoteUrl = url.replace(/(^\w+:|^)\/\//, '').replace(/\/$/, '');
+        let remoteUrl = responseData.url.replace(/(^\w+:|^)\/\//, '').replace(/\/$/, '');
         let findReplace = [
             ['//' + localUrl, '//' + remoteUrl],
         ];
@@ -176,6 +186,9 @@ export default {
             inputs.append(addHtml.findReplaceInputs(array, index));
         });
 
+        //set responseData.allowPush hidden input
+        //set responseData.allowPull hidden input
+        console.log(responseData);
         $('#add-update-connection-submit').prop('disabled', false);
     },
 
@@ -183,6 +196,7 @@ export default {
         console.log('match error');
         let inputs = $('#add-connection-find-replace .inputs');
         inputs.empty();
+        $('#error-message').addClass('visible');
         $('#add-update-connection-submit').prop('disabled', true);
     },
 

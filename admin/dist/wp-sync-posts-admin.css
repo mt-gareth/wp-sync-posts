@@ -18,6 +18,15 @@
 .wpsp-admin-settings .connection-clear.hidden {
   display: none;
 }
+.wpsp-admin-settings #error-message {
+  display: none;
+  font-weight: bold;
+  color: firebrick;
+  margin-bottom: 5px;
+}
+.wpsp-admin-settings #error-message.visible {
+  display: block;
+}
 
 .wpsp-post-sync-form .wpsp-form {
   display: flex;

@@ -72,7 +72,8 @@
 					<input type="hidden" name="connection-id" value="">
 
 					<button class="connection-clear hidden" id="connection-clear">Cancel</button>
-					<input type="hidden" id="wpsp-connection-nonce" value="<?php echo wp_create_nonce('wpsp-connection'); ?>">
+					<input type="hidden" id="wpsp-connection-nonce" value="<?php echo wp_create_nonce( 'wpsp-connection' ); ?>">
+					<span id="error-message">Invalid Connection</span>
 					<input type="submit" value="Save" id="add-update-connection-submit" disabled>
 				</form>
 			</div>
@@ -96,8 +97,8 @@
 					</label>
 				</div>
 				<button class="reset-key" id="reset-key">Reset Key</button>
-				<input type="hidden" id="wpsp-reset-key-nonce" value="<?php echo wp_create_nonce('wpsp-settings-reset-key'); ?>">
-				<input type="hidden" id="wpsp-update-settings" value="<?php echo wp_create_nonce('wpsp-update-settings'); ?>">
+				<input type="hidden" id="wpsp-reset-key-nonce" value="<?php echo wp_create_nonce( 'wpsp-settings-reset-key' ); ?>">
+				<input type="hidden" id="wpsp-update-settings" value="<?php echo wp_create_nonce( 'wpsp-update-settings' ); ?>">
 			</div>
 		</div>
 	</div>
