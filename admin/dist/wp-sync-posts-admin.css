@@ -1,3 +1,9 @@
+.wpsp-admin-settings label {
+  cursor: initial;
+}
+.wpsp-admin-settings .heading {
+  margin-bottom: 15px;
+}
 .wpsp-admin-settings .content-section {
   display: none;
 }
@@ -15,6 +21,19 @@
 .wpsp-admin-settings .repeater-remove-btn {
   margin-left: 5px;
 }
+.wpsp-admin-settings .repeater-add-btn, .wpsp-admin-settings .btn {
+  font-size: 14px;
+  padding: 2px 8px;
+  border: 1px solid inherit;
+  cursor: pointer;
+}
+.wpsp-admin-settings input[type=submit], .wpsp-admin-settings input[type=submit]:disabled {
+  font-size: 14px;
+  padding: 2px 8px;
+  border-width: 1px;
+  border-color: inherit;
+  border-radius: 2px;
+}
 .wpsp-admin-settings .connection-clear.hidden {
   display: none;
 }
@@ -26,6 +45,46 @@
 }
 .wpsp-admin-settings #error-message.visible {
   display: block;
+}
+.wpsp-admin-settings .tabs {
+  display: flex;
+  border-bottom: 1px solid lightgray;
+  margin-bottom: 15px;
+}
+.wpsp-admin-settings .tabs .tab {
+  font-size: 14px;
+  padding: 8px 10px;
+  border: 1px solid lightgray;
+  border-bottom: none;
+  cursor: pointer;
+  margin-right: 10px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.wpsp-admin-settings .tabs .tab.active {
+  background: white;
+  border-bottom: 1px solid white;
+}
+.wpsp-admin-settings .connection-form-title {
+  margin: 30px 0 20px;
+}
+.wpsp-admin-settings .add-update-connection, .wpsp-admin-settings .wpsp-key-wrapper {
+  max-width: 400px;
+}
+.wpsp-admin-settings .add-update-connection label, .wpsp-admin-settings .wpsp-key-wrapper label {
+  display: flex;
+  flex-wrap: wrap;
+  cursor: initial;
+}
+.wpsp-admin-settings .add-update-connection label > *, .wpsp-admin-settings .wpsp-key-wrapper label > * {
+  flex: 1 0 100%;
+}
+.wpsp-admin-settings .add-update-connection label span, .wpsp-admin-settings .wpsp-key-wrapper label span {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+.wpsp-admin-settings .connection-edit, .wpsp-admin-settings .connection-delete {
+  cursor: pointer;
 }
 
 .wpsp-post-sync-form .wpsp-form {

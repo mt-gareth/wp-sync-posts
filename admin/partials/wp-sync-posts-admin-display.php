@@ -17,7 +17,7 @@
 	</div>
 	<div class="content">
 		<div class="tabs">
-			<div class="tab" data-tab-target="connections">Connections</div>
+			<div class="tab active" data-tab-target="connections">Connections</div>
 			<div class="tab" data-tab-target="settings">Settings</div>
 		</div>
 		<div class="tabbed-content">
@@ -81,19 +81,19 @@
 				<div class="input-group">
 					<label>
 						<input type="checkbox" name="wpsp-allow-push" id="wpsp-allow-push" <?php echo $options[ 'wpsp_allow_push' ] === 'true' ? 'checked' : ''; ?>>
-						<span>Allow Push</span>
+						<span>Allow <b>push</b> requests for this database to be overwritten</span>
 					</label>
 				</div>
 				<div class="input-group">
 					<label>
 						<input type="checkbox" name="wpsp-allow-pull" id="wpsp-allow-pull" <?php echo $options[ 'wpsp_allow_pull' ] === 'true' ? 'checked' : ''; ?>>
-						<span>Allow Pull</span>
+						<span>Allow <b>pull</b> requests to let this database be exported and downloaded </span>
 					</label>
 				</div>
-				<div class="input-group">
+				<div class="input-group wpsp-key-wrapper">
 					<label>
 						<span>Key</span>
-						<input type="text" name="wpsp-key" value="<?php echo $options[ 'wpsp_key' ]; ?>">
+						<input type="text" name="wpsp-key" value="<?php echo $options[ 'wpsp_key' ]; ?>" readonly>
 					</label>
 				</div>
 				<button class="reset-key" id="reset-key">Reset Key</button>

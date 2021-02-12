@@ -82,16 +82,21 @@ class Ajax
 
 		$params = [];
 		parse_str( $_REQUEST[ 'form' ], $params );
-		error_log( print_r( $_REQUEST[ 'form' ] ) );
+
 
 		$connection = [
 			'ID'           => (int)esc_textarea( $params[ 'connection-id' ] ),
 			'name'         => esc_textarea( $params[ 'name' ] ),
 			'url'          => esc_url_raw( $params[ 'url' ] ),
 			'key'          => esc_textarea( $params[ 'key' ] ),
-			'find_replace' => []
+			'find_replace' => [],
 			//add in allow push and pull
+			'allow_pull'   => esc_textarea( $params[ 'allow_pull' ] ),
+			'allow_push'   => esc_textarea( $params[ 'allow_pull' ] ),
+
 		];
+
+		error_log( print_r( $connection, true ) );
 
 		foreach ( $params[ 'find-replace' ] as $find_replace ) {
 			$connection[ 'find_replace' ][] = [ esc_textarea( $find_replace[ 'find' ] ), esc_textarea( $find_replace[ 'replace' ] ) ];

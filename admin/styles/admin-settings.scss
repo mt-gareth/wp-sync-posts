@@ -1,4 +1,12 @@
 .wpsp-admin-settings {
+	label {
+		cursor: initial;
+	}
+
+	.heading {
+		margin-bottom: 15px
+	}
+
 	.content-section {
 		display: none;
 
@@ -21,8 +29,19 @@
 		margin-left: 5px;
 	}
 
-	.repeater-add-btn {
+	.repeater-add-btn, .btn {
+		font-size: 14px;
+		padding: 2px 8px;
+		border: 1px solid inherit;
+		cursor: pointer;
+	}
 
+	input[type="submit"], input[type="submit"]:disabled {
+		font-size: 14px;
+		padding: 2px 8px;
+		border-width: 1px;
+		border-color: inherit;
+		border-radius: 2px;
 	}
 
 	.connection-clear {
@@ -42,5 +61,55 @@
 		}
 	}
 
+	.tabs {
+		display: flex;
+		border-bottom: 1px solid lightgray;
+		margin-bottom: 15px;
+
+		.tab {
+			font-size: 14px;
+			padding: 8px 10px;
+			border: 1px solid lightgray;
+			border-bottom: none;
+			cursor: pointer;
+			margin-right: 10px;
+			border-top-left-radius: 5px;
+			border-top-right-radius: 5px;
+
+			&.active {
+				background: white;
+				border-bottom: 1px solid white;
+			}
+		}
+	}
+
+	.connection-form-title {
+		margin: 30px 0 20px;
+		//padding: 30px 0 0;
+		//border-top: 1px solid lightgray;
+	}
+
+	.add-update-connection, .wpsp-key-wrapper {
+		max-width: 400px;
+
+		label {
+			display: flex;
+			flex-wrap: wrap;
+			cursor: initial;
+
+			& > * {
+				flex: 1 0 100%;
+			}
+
+			span {
+				font-weight: bold;
+				margin-bottom: 5px;
+			}
+		}
+	}
+
+	.connection-edit, .connection-delete {
+		cursor: pointer;
+	}
 }
 

@@ -44,6 +44,10 @@
 			<td class="autoload column-autoload" data-colname="Options">
 				<span class="connection-edit" data-connection="<?php echo htmlspecialchars( json_encode( $connection ), ENT_QUOTES, 'UTF-8' ); ?>">Edit</span> /
 				<span class="connection-delete" data-connection="<?php echo $connection->ID; ?>">Delete</span></td>
+<!--			<td class="option_action column-option_action" data-colname="Action">-->
+			<!--				<pre>--><?php //var_dump( $connection ) ?><!--</pre>-->
+			<!--			</td>-->
+
 		</tr>
 	<?php endforeach; ?>
 
