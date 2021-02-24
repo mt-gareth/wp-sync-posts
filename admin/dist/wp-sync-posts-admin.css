@@ -1,6 +1,12 @@
 .wpsp-admin-settings label {
   cursor: initial;
 }
+.wpsp-admin-settings button, .wpsp-admin-settings input[type=submit], .wpsp-admin-settings input[type=submit]:disabled {
+  padding: 5px 15px;
+  font-size: 14px;
+  border: 1px solid gray;
+  cursor: pointer;
+}
 .wpsp-admin-settings .heading {
   margin-bottom: 15px;
 }
@@ -13,6 +19,9 @@
 .wpsp-admin-settings .input-group {
   margin-bottom: 10px;
 }
+.wpsp-admin-settings .item-content {
+  width: 100%;
+}
 .wpsp-admin-settings .find-replace-group .items {
   display: flex;
   align-items: center;
@@ -21,18 +30,8 @@
 .wpsp-admin-settings .repeater-remove-btn {
   margin-left: 5px;
 }
-.wpsp-admin-settings .repeater-add-btn, .wpsp-admin-settings .btn {
-  font-size: 14px;
-  padding: 2px 8px;
-  border: 1px solid inherit;
-  cursor: pointer;
-}
-.wpsp-admin-settings input[type=submit], .wpsp-admin-settings input[type=submit]:disabled {
-  font-size: 14px;
-  padding: 2px 8px;
-  border-width: 1px;
-  border-color: inherit;
-  border-radius: 2px;
+.wpsp-admin-settings .repeater-add-btn {
+  margin-bottom: 50px;
 }
 .wpsp-admin-settings .connection-clear.hidden {
   display: none;
@@ -65,11 +64,14 @@
   background: white;
   border-bottom: 1px solid white;
 }
+.wpsp-admin-settings .wp-list-table {
+  table-layout: auto;
+}
 .wpsp-admin-settings .connection-form-title {
   margin: 30px 0 20px;
 }
 .wpsp-admin-settings .add-update-connection, .wpsp-admin-settings .wpsp-key-wrapper {
-  max-width: 400px;
+  max-width: 50%;
 }
 .wpsp-admin-settings .add-update-connection label, .wpsp-admin-settings .wpsp-key-wrapper label {
   display: flex;
@@ -85,6 +87,15 @@
 }
 .wpsp-admin-settings .connection-edit, .wpsp-admin-settings .connection-delete {
   cursor: pointer;
+}
+.wpsp-admin-settings .column-status-reload {
+  position: relative;
+}
+.wpsp-admin-settings .column-status-reload .dashicons {
+  cursor: pointer;
+  font-size: 15px;
+  width: 10px;
+  height: 10px;
 }
 
 .wpsp-post-sync-form .wpsp-form {

@@ -65,6 +65,7 @@
 								</div>
 							</div>
 							<div class="inputs"></div>
+							<label>Add fields to find and replace</label>
 							<button class="repeater-add-btn">Add</button>
 						</div>
 					</div>

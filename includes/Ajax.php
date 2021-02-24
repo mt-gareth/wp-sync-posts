@@ -92,11 +92,11 @@ class Ajax
 			'find_replace' => [],
 			//add in allow push and pull
 			'allow_pull'   => esc_textarea( $params[ 'allow_pull' ] ),
-			'allow_push'   => esc_textarea( $params[ 'allow_pull' ] ),
+			'allow_push'   => esc_textarea( $params[ 'allow_push' ] ),
 
 		];
 
-		error_log( print_r( $connection, true ) );
+		error_log( print_r( $current_connections, true ) );
 
 		foreach ( $params[ 'find-replace' ] as $find_replace ) {
 			$connection[ 'find_replace' ][] = [ esc_textarea( $find_replace[ 'find' ] ), esc_textarea( $find_replace[ 'replace' ] ) ];

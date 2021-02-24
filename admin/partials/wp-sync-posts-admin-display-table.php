@@ -17,20 +17,17 @@
 		<th scope="col" id="option_id" class="manage-column column-option_id column-primary ">
 			<span>ID</span>
 		</th>
-		<th scope="col" id="option_name" class="manage-column column-option_name  ">
+		<th scope="col" id="option_name" class="manage-column column-option_name  column-primary ">
 			<span>Name</span>
 		</th>
-		<th scope="col" id="option_url" class="manage-column column-option_url">
+		<th scope="col" id="option_url" class="manage-column column-option_url column-primary">
 			<span>URL</span>
 		</th>
-		<th scope="col" id="option_options" class="manage-column column-options">
-			<span>Options</span>
-		</th>
-		<th scope="col" id="option_actions" class="manage-column column-actions">
+		<th scope="col" id="option_actions" class="manage-column column-actions column-primary">
 			<span>Actions</span>
 		</th>
-		<th scope="col" id="option_reload" class="manage-column column-reload-actions">
-			<span>Reload Actions</span>
+		<th scope="col" id="option_status" class="manage-column column-status column-primary">
+			<span>Status</span>
 		</th>
 	</tr>
 	</thead>
@@ -43,11 +40,12 @@
 			<td class="option_value column-option_value" data-colname="Value"><?php echo $connection->url; ?></td>
 			<td class="autoload column-autoload" data-colname="Options">
 				<span class="connection-edit" data-connection="<?php echo htmlspecialchars( json_encode( $connection ), ENT_QUOTES, 'UTF-8' ); ?>">Edit</span> /
-				<span class="connection-delete" data-connection="<?php echo $connection->ID; ?>">Delete</span></td>
-<!--			<td class="option_action column-option_action" data-colname="Action">-->
-			<!--				<pre>--><?php //var_dump( $connection ) ?><!--</pre>-->
-			<!--			</td>-->
-
+				<span class="connection-delete" data-connection="<?php echo $connection->ID; ?>">Delete</span> /
+				<span class="connection-push" data-connection="<?php echo $connection->ID; ?>">Accepts Push</span> /
+				<span class="connection-pull" data-connection="<?php echo $connection->ID; ?>">Accepts Pull</span></td>
+			<td class="status-reload column-status-reload" data-colname="Status Reload">
+				<span class="dashicons dashicons-image-rotate"></span>
+			</td>
 		</tr>
 	<?php endforeach; ?>
 

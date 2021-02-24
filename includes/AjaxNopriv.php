@@ -77,7 +77,7 @@ class AjaxNopriv
 		$this->validate_key();
 		$this->validate_sig( $filtered_post );
 
-		if ( !get_option( 'wpsp_allow_push' ) ) wp_send_json_error( 'This site does not allow Push' );
+		if ( get_option( 'wpsp_allow_push' ) === 'false' ) wp_send_json_error( 'This site does not allow Push' );
 
 		$remote_post_data = $_REQUEST[ 'local_post_data' ];
 		$find_replace = $_REQUEST[ 'find_replace' ] ?: [];
@@ -112,7 +112,7 @@ class AjaxNopriv
 		$this->validate_key();
 		$this->validate_sig( $filtered_post );
 
-		if ( !get_option( 'wpsp_allow_pull' ) ) wp_send_json_error( 'This site does not allow Pull' );
+		if ( get_option( 'wpsp_allow_pull' ) === 'false' ) wp_send_json_error( 'This site does not allow Pull' );
 
 		$post_selection = esc_textarea( $_REQUEST[ 'remote_post_selection' ] );
 		$slug = esc_textarea( $_REQUEST[ 'post_slug' ] );

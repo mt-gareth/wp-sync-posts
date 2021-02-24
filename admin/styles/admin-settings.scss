@@ -3,6 +3,14 @@
 		cursor: initial;
 	}
 
+	button, input[type="submit"], input[type="submit"]:disabled {
+		padding: 5px 15px;
+		font-size: 14px;
+		//padding: 2px 8px;
+		border: 1px solid gray;
+		cursor: pointer;
+	}
+
 	.heading {
 		margin-bottom: 15px
 	}
@@ -19,6 +27,10 @@
 		margin-bottom: 10px;
 	}
 
+	.item-content {
+		width: 100%;
+	}
+
 	.find-replace-group .items {
 		display: flex;
 		align-items: center;
@@ -29,19 +41,8 @@
 		margin-left: 5px;
 	}
 
-	.repeater-add-btn, .btn {
-		font-size: 14px;
-		padding: 2px 8px;
-		border: 1px solid inherit;
-		cursor: pointer;
-	}
-
-	input[type="submit"], input[type="submit"]:disabled {
-		font-size: 14px;
-		padding: 2px 8px;
-		border-width: 1px;
-		border-color: inherit;
-		border-radius: 2px;
+	.repeater-add-btn {
+		margin-bottom: 50px;
 	}
 
 	.connection-clear {
@@ -83,6 +84,10 @@
 		}
 	}
 
+	.wp-list-table {
+		table-layout: auto;
+	}
+
 	.connection-form-title {
 		margin: 30px 0 20px;
 		//padding: 30px 0 0;
@@ -90,7 +95,7 @@
 	}
 
 	.add-update-connection, .wpsp-key-wrapper {
-		max-width: 400px;
+		max-width: 50%;
 
 		label {
 			display: flex;
@@ -111,5 +116,28 @@
 	.connection-edit, .connection-delete {
 		cursor: pointer;
 	}
+
+	.column-status-reload {
+		position: relative;
+
+		.dashicons {
+			cursor: pointer;
+			font-size: 15px;
+			width: 10px;
+			height: 10px;
+		}
+	}
+
+	//.wp-list-table tr:not(.inline-edit-row):not(.no-items) td.column-primary ~ td:not(.check-column) {
+	//	@media screen and (max-width: 782px) {
+	//		display: table-cell;
+	//	}
+	//}
+	//
+	//.wp-list-table th.column-primary ~ th {
+	//	@media screen and (max-width: 782px) {
+	//		display: table-cell;
+	//	}
+	//}
 }
 
